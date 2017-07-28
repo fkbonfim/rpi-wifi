@@ -62,7 +62,7 @@ function parseNetworkLine (line) {
 }
 
 function quoteValue (value) {
-	if (!(value.substring(0,1) == '"') && !(value.substring(value.length - 1) == '"'))
+	if (typeof(value) === 'string' && !(value.substring(0,1) == '"') && !(value.substring(value.length - 1) == '"'))
 		value = '"' + value + '"';
 
 	return value;
@@ -137,6 +137,29 @@ WpaSupplicantService.prototype.addNetwork = function (ssid, attrib) {
 		this._networks[index] = network;
 	} else {
 		this._networks.push(network);
+	}
+}
+
+WpaSupplicantService.prototype.forgetNetwork = function (ssid, attrib) {
+	ssid = quoteValue(ssid);
+	var bssid = null;
+	for (var i = 0; i < attrib.length; i++) {
+		if (attrib[i].key == "ssid")
+		attrib[i].value = quoteValue(attrib[i].value);
+		if (attrib[i].key == "bssid")
+			bssid = attrib[i].value;
+	}
+
+	var network = {
+		ssid: ssid,
+		attrib: attrib
+	};
+
+
+	var index = this.getNetworkIndex(ssid, bssid);
+
+	if (index != -1) {
+		this._networks.splice(index,1);
 	}
 }
 

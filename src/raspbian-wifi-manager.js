@@ -62,6 +62,22 @@ RaspbianWifiManager.prototype.addWpaDhcpNetwork = function (ssid, password, call
 	}
 }
 
+RaspbianWifiManager.prototype.forgetWpaDhcpNetwork = function (ssid, callback, bssid) {
+	var attrib = [
+		{key:'ssid' , value: ssid}
+	];
+
+	if (bssid) attrib.push({key: 'bssid', value: bssid});
+
+	wpasup.forgetNetwork(ssid, attrib);
+
+	wpasup.persist(function(err) {
+		wpacli.reconfigure(function(err) {
+			callback(err);
+		});
+	});
+}
+
 RaspbianWifiManager.prototype.getKnownNetworks = function (callback) {
 	if (!this.wpaSupplicantServiceInitiated) {
 		setTimeout(self.getKnownNetworks.bind(null, callback), 1000);

@@ -10,14 +10,14 @@ function WpaCliService (path) {
 
 function parseStatus (text) {
 	var content = text.split("\n");
-
 	var current = {};
 
-	var connected = content[1].match(/bssid=(.*)/);
-	if (!connected) return null;
+	if (!content.length) return null;
 
-	current.bssid = content[1].match(/bssid=(.*)/)[1];
-	current.ssid = content[3].match(/ssid=(.*)/)[1];
+	content.forEach(function(item){
+		if (item.includes('bssid')) current.address = item.replace(/bssid=\s*/, '').toUpperCase();
+		else if (item.includes('ssid')) current.ssid = item.replace(/ssid=\s*/, '');
+	});
 
 	return current;
 }

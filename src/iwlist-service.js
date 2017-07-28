@@ -35,17 +35,20 @@ function parseIwlist (text) {
 
 function parseCell (cellContent) {
 	if (cellContent.length == 0) return null;
-
 	var network = {};
 
-	network.address = cellContent[0].match(/Address\:\s(.*)/)[1];
-	network.channel = cellContent[1].match(/Channel\:(.*)/)[1];
-	network.frequency = cellContent[2].match(/Frequency\:(.*)\s\(.*$/)[1];
-	network.quality = cellContent[3].match(/Quality=(\d+).*$/)[1];
-	network.max_quality = cellContent[3].match(/Quality=.*\/(\d+).*$/)[1];
-	network.signal_level = cellContent[3].match(/Signal level=([-]*\d+).*$/)[1];
-	network.encryption_key = cellContent[4].match(/Encryption key\:(.*)$/)[1];
-	network.essid = cellContent[5].match(/ESSID\:(.*)$/)[1];
+	cellContent.forEach(function(cell) {
+		if (cell.includes('Address:')) network.address = cell.replace(/.*Address:\s*/, '');
+		else if (cell.includes('Channel:')) network.channel = cell.replace(/.*Channel:\s*/, '');
+		else if (cell.includes('Frequency:')) network.frequency = cell.match(/Frequency:\s*\d+(.\d+)*\sGHz/)[0].replace(/Frequency:\s*/,'');
+		else if (cell.includes('Quality')) {
+			network.quality = cell.match(/\/(\d+)/)[0].replace(/\//, '');
+			network.max_quality = cell.match(/=(\d+)/)[0].replace(/=/, '');
+			if (cell.includes('Signal level'))  network.signal_level = cell.match(/Signal level=\s*([-]*\d+)/)[0].replace(/Signal level=\s*/,'');
+		} 
+		else if (cell.includes('Encryption key:')) network.encryption_key = cell.replace(/.*Encryption key:\s*/, '');
+		else if (cell.includes('ESSID:')) network.essid = cell.replace(/.*ESSID:/, '').replace(/"/g,'');
+	});
 
 	return network;
 }
