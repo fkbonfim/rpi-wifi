@@ -4,7 +4,7 @@ var self;
 function WpaSupplicantService (path) {
 	self = this;
 	this._path = path ? path : '/etc/wpa_supplicant/wpa_supplicant.conf';
-	this._conf = [];
+	this._conf = ['ctrl_interface=/var/run/wpa_supplicant'];
 	this._networks = [];
 }
 
@@ -165,6 +165,8 @@ WpaSupplicantService.prototype.forgetNetwork = function (ssid, attrib) {
 
 WpaSupplicantService.prototype.persist = function (callback) {
 	var content = "";
+	
+	if (this._conf.length === 0) this._conf.push('ctrl_interface=/var/run/wpa_supplicant');
 
 	for (var i = 0; i < this._conf.length; i++) {
 		content += this._conf[i] + "\n";

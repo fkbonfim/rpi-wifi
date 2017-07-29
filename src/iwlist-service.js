@@ -42,8 +42,8 @@ function parseCell (cellContent) {
 		else if (cell.includes('Channel:')) network.channel = cell.replace(/.*Channel:\s*/, '');
 		else if (cell.includes('Frequency:')) network.frequency = cell.match(/Frequency:\s*\d+(.\d+)*\sGHz/)[0].replace(/Frequency:\s*/,'');
 		else if (cell.includes('Quality')) {
-			network.quality = cell.match(/\/(\d+)/)[0].replace(/\//, '');
-			network.max_quality = cell.match(/=(\d+)/)[0].replace(/=/, '');
+			network.quality = cell.match(/=(\d+)/)[0].replace(/=/, '');
+			network.max_quality = cell.match(/\/(\d+)/)[0].replace(/\//, '');
 			if (cell.includes('Signal level'))  network.signal_level = cell.match(/Signal level=\s*([-]*\d+)/)[0].replace(/Signal level=\s*/,'');
 		} 
 		else if (cell.includes('Encryption key:')) network.encryption_key = cell.replace(/.*Encryption key:\s*/, '');

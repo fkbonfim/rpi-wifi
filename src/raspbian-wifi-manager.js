@@ -58,6 +58,7 @@ RaspbianWifiManager.prototype.addWpaDhcpNetwork = function (ssid, password, call
 			this.wpacli.reconfigure(function(err) {
 				callback(err);
 			});
+			callback(err)
 		});
 	}
 }
