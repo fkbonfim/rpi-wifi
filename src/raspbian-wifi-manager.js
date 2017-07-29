@@ -37,7 +37,15 @@ RaspbianWifiManager.prototype.scan = function (callback, interface) {
 	interface = interface ? interface : 'wlan0';
 
 	iwlist.scan(function(err, networks) {
-		callback(err, networks);
+		if (networks) {
+			self.status(function(err, response) {
+				networks = networks.map(function(network) {
+						network.isCurrent = network.address === response.network.address;
+						return network;
+					});
+				callback(err, networks);
+			});
+		}
 	}, interface);
 }
 
