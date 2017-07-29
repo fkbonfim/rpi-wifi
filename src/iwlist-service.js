@@ -48,6 +48,12 @@ function parseCell (cellContent) {
 		} 
 		else if (cell.includes('Encryption key:')) network.encryption_key = cell.replace(/.*Encryption key:\s*/, '');
 		else if (cell.includes('ESSID:')) network.essid = cell.replace(/.*ESSID:/, '').replace(/"/g,'');
+
+		if (network.encryption_key === 'on') {
+			if (cell.includes('IEEE')) {
+		 		network.encryption_type = /\/\w+\d*/.test(cell) ? cell.match(/\/\w+\d*/)[0].replace(/\//, '') : 'WEP';
+		 	}
+		}
 	});
 
 	return network;

@@ -57,8 +57,16 @@ RaspbianWifiManager.prototype.addWpaDhcpNetwork = function (ssid, password, call
 	} else {
 		var attrib = [
 			{ key:'ssid' , value: ssid },
-			{ key:'psk' , value: password }
 		];
+
+		if (password) {
+			attrib.push({key:'psk' , value: password});
+		} else {
+			attrib.push(
+				{key:'proto', value: 'RSN'}, 
+				{key: 'key_mgmt', value: 'NONE'}
+			);
+		}
 
 		if (bssid) attrib.push({ key: 'bssid', value: bssid });
 
