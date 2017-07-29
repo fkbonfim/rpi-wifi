@@ -39,10 +39,12 @@ RaspbianWifiManager.prototype.scan = function (callback, interface) {
 	iwlist.scan(function(err, networks) {
 		if (networks) {
 			self.status(function(err, response) {
-				networks = networks.map(function(network) {
-						network.isCurrent = network.address === response.network.address;
-						return network;
-					});
+				if (response && response.network) {
+					networks = networks.map(function(network) {
+							network.isCurrent = network.address === response.network.address;
+							return network;
+						});
+				}
 				callback(err, networks);
 			});
 		}

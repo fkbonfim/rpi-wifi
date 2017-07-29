@@ -19,7 +19,7 @@ function parseStatus (text) {
 		else if (item.includes('ssid')) current.ssid = item.replace(/ssid=\s*/, '');
 	});
 
-	return current;
+	return current.address ? current : null;
 }
 
 //Public methods
