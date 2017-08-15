@@ -13,10 +13,10 @@ function parseStatus (text) {
 	var current = {};
 
 	if (!content.length) return null;
-
 	content.forEach(function(item){
 		if (item.includes('bssid')) current.address = item.replace(/bssid=\s*/, '').toUpperCase();
 		else if (item.includes('ssid')) current.ssid = item.replace(/ssid=\s*/, '');
+		else if (item.includes('wpa_state')) current.wpa_state = item.replace(/wpa_state=\s*/, '');
 	});
 
 	return current.address ? current : null;

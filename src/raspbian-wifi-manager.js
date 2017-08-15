@@ -41,8 +41,9 @@ RaspbianWifiManager.prototype.scan = function (callback, interface) {
 			self.status(function(err, response) {
 				if (response && response.network) {
 					networks = networks.map(function(network) {
-							network.isCurrent = network.address === response.network.address;
-							return network;
+							network.isCurrent = network.address === response.network.address && !response.network.wpa_state.includes('HANDSHAKE'); 
+							// !response.network.wpa_state.includes('HANDSHAKE') is to prevent assigning network as current on the 4WAY_HANDSHAKE stage
+				 			return network;
 						});
 				}
 				callback(err, networks);
