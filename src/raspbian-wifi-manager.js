@@ -25,7 +25,7 @@ RaspbianWifiManager.prototype.status = function (callback) {
 			callback(err);
 		} else {
 			var response = {
-				connected: (current ? true : false),
+				connected: !!current && current.wpa_state.includes('COMPLETED'), 
 				network: current
 			};
 			callback(null, response);
@@ -41,8 +41,8 @@ RaspbianWifiManager.prototype.scan = function (callback, interface) {
 			self.status(function(err, response) {
 				if (response && response.network) {
 					networks = networks.map(function(network) {
-							network.isCurrent = network.address === response.network.address && !response.network.wpa_state.includes('HANDSHAKE'); 
-							// !response.network.wpa_state.includes('HANDSHAKE') is to prevent assigning network as current on the 4WAY_HANDSHAKE stage
+							network.isCurrent = network.address === response.network.address && response.network.wpa_state.includes('COMPLETED'); 
+							// response.network.wpa_state.includes('COMPLETED') is to prevent assigning network as current on connecting stages
 				 			return network;
 						});
 				}
