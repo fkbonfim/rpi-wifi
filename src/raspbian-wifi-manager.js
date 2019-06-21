@@ -48,6 +48,8 @@ RaspbianWifiManager.prototype.scan = function (callback, interface) {
 				}
 				callback(err, networks);
 			});
+		} else {
+			callback(err);
 		}
 	}, interface);
 }
