@@ -68,8 +68,11 @@ WpaCliService.prototype.selectNetwork = function (id, callback) {
 	});
 }
 
-WpaCliService.prototype.status = function (callback) {
+WpaCliService.prototype.status = function (callback, wInterface) {
 	var command = this._path + ' status';
+	if (wInterface) {
+		command += ' -i ' + wInterface;
+	}
 	exec(command, (error, stdout, stderr) => {
 		if (stdout.includes("FAIL")) {
 			callback(stdout);

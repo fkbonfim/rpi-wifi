@@ -23,7 +23,7 @@ function RaspbianWifiManager () {
 
 //Public methods
 
-RaspbianWifiManager.prototype.status = function (callback) {
+RaspbianWifiManager.prototype.status = function (callback, wInterface) {
 	wpacli.status(function(err, current) {
 		if (err) {
 			callback(err);
@@ -34,7 +34,7 @@ RaspbianWifiManager.prototype.status = function (callback) {
 			};
 			callback(null, response);
 		}
-	});
+	}, wInterface);
 }
 
 RaspbianWifiManager.prototype.scan = function (callback, wInterface) {
