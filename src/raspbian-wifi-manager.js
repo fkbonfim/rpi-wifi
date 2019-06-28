@@ -33,8 +33,8 @@ RaspbianWifiManager.prototype.status = function (callback) {
 	});
 }
 
-RaspbianWifiManager.prototype.scan = function (callback, interface) {
-	interface = interface ? interface : 'wlan0';
+RaspbianWifiManager.prototype.scan = function (callback, wInterface) {
+	wInterface = wInterface ? wInterface : 'wlan0';
 
 	iwlist.scan(function(err, networks) {
 		if (networks) {
@@ -51,7 +51,7 @@ RaspbianWifiManager.prototype.scan = function (callback, interface) {
 		} else {
 			callback(err);
 		}
-	}, interface);
+	}, wInterface);
 }
 
 RaspbianWifiManager.prototype.addWpaDhcpNetwork = function (ssid, password, callback, bssid) {

@@ -61,10 +61,10 @@ function parseCell (cellContent) {
 
 //Public methods
 
-IwlistService.prototype.scan = function (callback, interface) {
-	interface = interface ? interface : 'wlan0';
+IwlistService.prototype.scan = function (callback, wInterface) {
+	wInterface = wInterface ? wInterface : 'wlan0';
 
-	var command = this._path + ' ' + interface + ' scan';
+	var command = this._path + ' ' + wInterface + ' scan';
 	exec(command, (error, stdout, stderr) => {
 		if (error) {
 			callback(error);
