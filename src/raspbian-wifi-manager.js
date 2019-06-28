@@ -2,6 +2,10 @@ var WpaCliService = require('./wpa-cli-service.js');
 var IwlistService = require('./iwlist-service.js');
 var WpaSupplicantService = require('./wpa-supplicant-service.js');
 var self;
+var wpacli;
+var iwlist;
+var wpasup;
+var wpaSupplicantServiceInitiated;
 
 function RaspbianWifiManager () {
 	self = this;
