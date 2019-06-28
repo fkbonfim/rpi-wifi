@@ -2,6 +2,10 @@ var WpaCliService = require('./wpa-cli-service.js');
 var IwlistService = require('./iwlist-service.js');
 var WpaSupplicantService = require('./wpa-supplicant-service.js');
 var self;
+var wpacli;
+var iwlist;
+var wpasup;
+var wpaSupplicantServiceInitiated;
 
 function RaspbianWifiManager () {
 	self = this;
@@ -19,7 +23,7 @@ function RaspbianWifiManager () {
 
 //Public methods
 
-RaspbianWifiManager.prototype.status = function (callback) {
+RaspbianWifiManager.prototype.status = function (callback, wInterface) {
 	wpacli.status(function(err, current) {
 		if (err) {
 			callback(err);
@@ -30,7 +34,7 @@ RaspbianWifiManager.prototype.status = function (callback) {
 			};
 			callback(null, response);
 		}
-	});
+	}, wInterface);
 }
 
 RaspbianWifiManager.prototype.scan = function (callback, wInterface) {
