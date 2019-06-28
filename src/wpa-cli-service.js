@@ -1,19 +1,19 @@
 var exec = require('child_process').exec;
 var self;
 
-function WpaCliService (path) {
+function WpaCliService(path) {
 	self = this;
 	this._path = path ? path : 'wpa_cli';
 }
 
 //Private methods
 
-function parseStatus (text) {
+function parseStatus(text) {
 	var content = text.split("\n");
 	var current = {};
 
 	if (!content.length) return null;
-	content.forEach(function(item){
+	content.forEach(function (item) {
 		if (item.includes('bssid')) current.address = item.replace(/bssid=\s*/, '').toUpperCase();
 		else if (item.includes('ssid')) current.ssid = item.replace(/ssid=\s*/, '');
 		else if (item.includes('wpa_state')) current.wpa_state = item.replace(/wpa_state=\s*/, '');
@@ -77,7 +77,7 @@ WpaCliService.prototype.status = function (callback, wInterface) {
 		if (stdout.includes("FAIL")) {
 			callback(stdout);
 		} else {
-			var current = parseStatus (stdout);
+			var current = parseStatus(stdout);
 			callback(null, current);
 		}
 	});

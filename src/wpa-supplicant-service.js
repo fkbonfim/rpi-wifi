@@ -1,7 +1,7 @@
 var fs = require('fs');
 var self;
 
-function WpaSupplicantService (path) {
+function WpaSupplicantService(path) {
 	self = this;
 	this._path = path ? path : '/etc/wpa_supplicant/wpa_supplicant.conf';
 	this._conf = ['ctrl_interface=/var/run/wpa_supplicant'];
@@ -10,7 +10,7 @@ function WpaSupplicantService (path) {
 
 //Private methods
 
-function parseFile (callback) {
+function parseFile(callback) {
 	self._conf = [];
 	self._networks = [];
 	var currentNetwork;
@@ -39,7 +39,10 @@ function parseFile (callback) {
 			} else {
 				var networkLine = parseNetworkLine(line);
 				if (networkLine.ssid) currentNetwork.ssid = networkLine.ssid;
-				currentNetwork.attrib.push({ key: networkLine.key, value: networkLine.value });
+				currentNetwork.attrib.push({
+					key: networkLine.key,
+					value: networkLine.value
+				});
 			}
 		}
 	});
@@ -49,7 +52,7 @@ function parseFile (callback) {
 	});
 };
 
-function parseNetworkLine (line) {
+function parseNetworkLine(line) {
 	var key = line.substring(0, line.indexOf("="));
 	key = key.replace(/^[\s|\t]+/, "").replace(/\s+$/, "");
 
@@ -58,11 +61,15 @@ function parseNetworkLine (line) {
 
 	var ssid = (key == "ssid") ? value : null;
 
-	return { key: key, value: value, ssid: ssid};
+	return {
+		key: key,
+		value: value,
+		ssid: ssid
+	};
 }
 
-function quoteValue (value) {
-	if (typeof(value) === 'string' && !(value.substring(0,1) == '"') && !(value.substring(value.length - 1) == '"'))
+function quoteValue(value) {
+	if (typeof (value) === 'string' && !(value.substring(0, 1) == '"') && !(value.substring(value.length - 1) == '"'))
 		value = '"' + value + '"';
 
 	return value;
@@ -159,7 +166,7 @@ WpaSupplicantService.prototype.forgetNetwork = function (ssid, attrib) {
 	var index = this.getNetworkIndex(ssid, bssid);
 
 	if (index != -1) {
-		this._networks.splice(index,1);
+		this._networks.splice(index, 1);
 	}
 }
 
