@@ -59,7 +59,7 @@ RaspbianWifiManager.prototype.scan = function (callback, wInterface) {
 }
 
 RaspbianWifiManager.prototype.addWpaDhcpNetwork = function (ssid, password, callback, bssid) {
-	if (!this.wpaSupplicantServiceInitiated) {
+	if (!wpaSupplicantServiceInitiated) {
 		setTimeout(self.addWpaDhcpNetwork.bind(null, ssid, password, callback, bssid), 1000);
 	} else {
 		var attrib = [
@@ -77,10 +77,10 @@ RaspbianWifiManager.prototype.addWpaDhcpNetwork = function (ssid, password, call
 
 		if (bssid) attrib.push({ key: 'bssid', value: bssid });
 
-		this.wpasup.addNetwork(ssid, attrib);
+		wpasup.addNetwork(ssid, attrib);
 
-		this.wpasup.persist(function(err) {
-			this.wpacli.reconfigure(function(err) {
+		wpasup.persist(function(err) {
+			wpacli.reconfigure(function(err) {
 				callback(err);
 			});
 			callback(err)
@@ -105,10 +105,10 @@ RaspbianWifiManager.prototype.forgetWpaDhcpNetwork = function (ssid, callback, b
 }
 
 RaspbianWifiManager.prototype.getKnownNetworks = function (callback) {
-	if (!this.wpaSupplicantServiceInitiated) {
+	if (!wpaSupplicantServiceInitiated) {
 		setTimeout(self.getKnownNetworks.bind(null, callback), 1000);
 	} else {
-		callback(this.wpasup.getNetworks());
+		callback(wpasup.getNetworks());
 	}
 }
 
@@ -119,7 +119,7 @@ RaspbianWifiManager.prototype.disconnect = function (callback) {
 }
 
 RaspbianWifiManager.prototype.connect = function (ssid, callback, bssid) {
-	if (!this.wpaSupplicantServiceInitiated) {
+	if (!wpaSupplicantServiceInitiated) {
 		setTimeout(self.connect.bind(null, ssid, callback, bssid), 1000);
 	} else {
 		var index = wpasup.getNetworkIndex(ssid, bssid);
