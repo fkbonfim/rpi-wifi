@@ -1,7 +1,7 @@
 var fs = require('fs');
 var self;
 
-function WpaSupplicantService (path) {
+function WpaSupplicantService(path) {
 	self = this;
 	this._path = path ? path : '/etc/wpa_supplicant/wpa_supplicant.conf';
 	this._conf = ['ctrl_interface=/var/run/wpa_supplicant'];
@@ -10,7 +10,7 @@ function WpaSupplicantService (path) {
 
 //Private methods
 
-function parseFile (callback) {
+function parseFile(callback) {
 	self._conf = [];
 	self._networks = [];
 	var currentNetwork;
@@ -29,7 +29,7 @@ function parseFile (callback) {
 				};
 				insideNetwork = true;
 			} else {
-				if (line != "") 
+				if (line != "")
 					self._conf.push(line);
 			}
 		} else {
@@ -39,7 +39,10 @@ function parseFile (callback) {
 			} else {
 				var networkLine = parseNetworkLine(line);
 				if (networkLine.ssid) currentNetwork.ssid = networkLine.ssid;
-				currentNetwork.attrib.push({ key: networkLine.key, value: networkLine.value });
+				currentNetwork.attrib.push({
+					key: networkLine.key,
+					value: networkLine.value
+				});
 			}
 		}
 	});
@@ -49,7 +52,7 @@ function parseFile (callback) {
 	});
 };
 
-function parseNetworkLine (line) {
+function parseNetworkLine(line) {
 	var key = line.substring(0, line.indexOf("="));
 	key = key.replace(/^[\s|\t]+/, "").replace(/\s+$/, "");
 
@@ -58,11 +61,15 @@ function parseNetworkLine (line) {
 
 	var ssid = (key == "ssid") ? value : null;
 
-	return { key: key, value: value, ssid: ssid};
+	return {
+		key: key,
+		value: value,
+		ssid: ssid
+	};
 }
 
-function quoteValue (value) {
-	if (typeof(value) === 'string' && !(value.substring(0,1) == '"') && !(value.substring(value.length - 1) == '"'))
+function quoteValue(value) {
+	if (typeof (value) === 'string' && !(value.substring(0, 1) == '"') && !(value.substring(value.length - 1) == '"'))
 		value = '"' + value + '"';
 
 	return value;
@@ -98,7 +105,7 @@ WpaSupplicantService.prototype.getNetworkIndex = function (ssid, bssid) {
 			for (var j = 0; j < self._networks[i].attrib.length; j++) {
 				if (self._networks[i].attrib[j].key == "bssid" && self._networks[i].attrib[j].value == bssid) return i;
 			}
-			
+
 		}
 	}
 
@@ -108,7 +115,7 @@ WpaSupplicantService.prototype.getNetworkIndex = function (ssid, bssid) {
 WpaSupplicantService.prototype.getNetwork = function (ssid, bssid) {
 	ssid = quoteValue(ssid);
 	var index = this.getNetworkIndex(ssid, bssid);
-	if (index != -1) { 
+	if (index != -1) {
 		return this._networks[index];
 	} else {
 		return null;
@@ -120,7 +127,7 @@ WpaSupplicantService.prototype.addNetwork = function (ssid, attrib) {
 	var bssid = null;
 	for (var i = 0; i < attrib.length; i++) {
 		if (attrib[i].key == "ssid" || attrib[i].key == "psk")
-		attrib[i].value = quoteValue(attrib[i].value);
+			attrib[i].value = quoteValue(attrib[i].value);
 		if (attrib[i].key == "bssid")
 			bssid = attrib[i].value;
 	}
@@ -145,7 +152,7 @@ WpaSupplicantService.prototype.forgetNetwork = function (ssid, attrib) {
 	var bssid = null;
 	for (var i = 0; i < attrib.length; i++) {
 		if (attrib[i].key == "ssid")
-		attrib[i].value = quoteValue(attrib[i].value);
+			attrib[i].value = quoteValue(attrib[i].value);
 		if (attrib[i].key == "bssid")
 			bssid = attrib[i].value;
 	}
@@ -159,13 +166,13 @@ WpaSupplicantService.prototype.forgetNetwork = function (ssid, attrib) {
 	var index = this.getNetworkIndex(ssid, bssid);
 
 	if (index != -1) {
-		this._networks.splice(index,1);
+		this._networks.splice(index, 1);
 	}
 }
 
 WpaSupplicantService.prototype.persist = function (callback) {
 	var content = "";
-	
+
 	if (this._conf.length === 0) this._conf.push('ctrl_interface=/var/run/wpa_supplicant');
 
 	for (var i = 0; i < this._conf.length; i++) {
@@ -186,18 +193,17 @@ WpaSupplicantService.prototype.persist = function (callback) {
 		if (uErr) {
 			console.log("Error unlinking '" + self._path + "' file");
 			console.log(uErr);
-			callback(uErr);
-		} else {
-			fs.writeFile(self._path, content, function (wErr) {
-				if (wErr) {
-					console.log("Error writting '" + self._path + "' file");
-					console.log(wErr);
-					callback(wErr);
-				} else {
-					callback();
-				}
-			});
 		}
+
+		fs.writeFile(self._path, content, function (wErr) {
+			if (wErr) {
+				console.log("Error writting '" + self._path + "' file");
+				console.log(wErr);
+				callback(wErr);
+			} else {
+				callback();
+			}
+		});
 	});
 }
 
