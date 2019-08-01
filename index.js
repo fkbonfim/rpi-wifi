@@ -257,21 +257,17 @@ rpiWifi.status = (networkInterface) => new Promise((resolve, reject) => {
             content.forEach(item => {
                 if (item.includes('bssid')) {
                     network.bssid = item.replace(/bssid=\s*/, '').toUpperCase()
-                } else if (item.includes('ssid')) {
-                    network.ssid = item.replace(/ssid=\s*/, '')
-                } else if (item.includes('wpa_state')) {
-                    network.wpa_state = item.replace(/wpa_state=\s*/, '')
+                } else {
+                    let values = item.split('=')
+                    if (values[0] && values[1]) {
+                        network[values[0]] = values[1]
+                    }
                 }
             })
         
             let status = {
-                connected: false,
-                network: null
-            }
-
-            if (network.wpa_state && network.wpa_state.includes('COMPLETED')) {
-                status.connected = true
-                status.network = network
+                connected: network.wpa_state && network.wpa_state.includes('COMPLETED'),
+                network: network
             }
 
             resolve(status)
