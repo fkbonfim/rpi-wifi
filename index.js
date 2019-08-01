@@ -51,8 +51,8 @@ const createWpaSupplicantFile = (networks, headers) => new Promise((resolve, rej
     networks.forEach(network => {
         content.push("network={")
         Object.entries(network).forEach(([key, value]) => {
-            if (/\s|=|\//.test(value)) {  // has whitespace, equal or slash
-                value = `"${value}"`      // add quote
+            if (isNaN(value)) {
+                value = `"${value}"` // add quotes on all nonnumeric values
             }
             content.push(`\t${key}=${value}`)
         })
