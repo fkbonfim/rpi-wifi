@@ -10,13 +10,13 @@ let wpaSupplicantConfigFilename = '/etc/wpa_supplicant/wpa_supplicant.conf'
 let wpaSupplicantConfigDefaultHeaders = ['ctrl_interface=/var/run/wpa_supplicant']
 
 const parseNetworkLine = (line) => {
-	let key = line.substring(0, line.indexOf("="))
-	key = key.replace(/^[\s|\t]+/, "").replace(/\s+$/, "")
+    let key = line.substring(0, line.indexOf("="))
+    key = key.replace(/^[\s|\t]+/, "").replace(/\s+$/, "")
 
-	let value = line.substring(line.indexOf("=") + 1)
-	value = value.replace(/^[\s|\t]+/, "").replace(/\s+$/, "")
+    let value = line.substring(line.indexOf("=") + 1)
+    value = value.replace(/^[\s|\t]+/, "").replace(/\s+$/, "")
 
-	return { key, value }
+    return { key, value }
 }
 
 const unquoteValue = (value) => {
@@ -35,9 +35,9 @@ const getSidType = (sid) => {
 }
 
 const createWpaSupplicantFile = (networks, headers) => new Promise((resolve, reject) => {
-	let content = []
-	
-	if (headers.length === 0) {
+    let content = []
+    
+    if (headers.length === 0) {
         headers = wpaSupplicantConfigDefaultHeaders
     }
 
@@ -62,18 +62,18 @@ const createWpaSupplicantFile = (networks, headers) => new Promise((resolve, rej
     // add empty line on end
     content.push("")
 
-	fs.unlink(wpaSupplicantConfigFilename, error => {
-		if (error && error.code !== 'ENOENT') {
-			reject(error)
-		} else {
-			fs.writeFile(wpaSupplicantConfigFilename, content.join("\n"), error => {
-				if (error) {
-					reject(error)
-				} else {
+    fs.unlink(wpaSupplicantConfigFilename, error => {
+        if (error && error.code !== 'ENOENT') {
+            reject(error)
+        } else {
+            fs.writeFile(wpaSupplicantConfigFilename, content.join("\n"), error => {
+                if (error) {
+                    reject(error)
+                } else {
                     rpiWifi.reconfigure().then(() => resolve()).catch(() => resolve())
-				}
-			})
-		}
+                }
+            })
+        }
     })
 })
 
@@ -239,14 +239,14 @@ rpiWifi.unsetNetworks = () => new Promise((resolve, reject) => {
 rpiWifi.status = (networkInterface) => new Promise((resolve, reject) => {
     let command = `${wpaCli} status`
     
-	if (networkInterface) {
-		command += ` -i ${networkInterface}`
+    if (networkInterface) {
+        command += ` -i ${networkInterface}`
     }
     
-	exec(command, (error, stdout, stderr) => {
-		if (stdout.includes("FAIL")) {
-			reject(stdout)
-		} else {
+    exec(command, (error, stdout, stderr) => {
+        if (stdout.includes("FAIL")) {
+            reject(stdout)
+        } else {
             let content = stdout.split("\n")
             let network = {}
         
@@ -275,8 +275,8 @@ rpiWifi.status = (networkInterface) => new Promise((resolve, reject) => {
             }
 
             resolve(status)
-		}
-	})
+        }
+    })
 })
 
 /**
@@ -284,20 +284,20 @@ rpiWifi.status = (networkInterface) => new Promise((resolve, reject) => {
  */
 rpiWifi.reconfigure = () => new Promise((resolve, reject) => {
     let command = `${wpaCli} reconfigure`
-	exec(command, (error, stdout, stderr) => {
-		if (stdout.includes("FAIL")) {
-			reject(stdout)
-		} else {
-			resolve()
-		}
-	})
+    exec(command, (error, stdout, stderr) => {
+        if (stdout.includes("FAIL")) {
+            reject(stdout)
+        } else {
+            resolve()
+        }
+    })
 })
 
 /**
  * Get the list of Access Points and Ad-Hoc
  */
 rpiWifi.scan = (networkInterface) => new Promise((resolve, reject) => {
-	networkInterface = networkInterface ? networkInterface : 'wlan0'
+    networkInterface = networkInterface ? networkInterface : 'wlan0'
     let command = `${iwlist} ${networkInterface} scan`
     const parseCell = (cellContent) => {
         if (cellContent.length == 0) {
@@ -338,10 +338,10 @@ rpiWifi.scan = (networkInterface) => new Promise((resolve, reject) => {
         return network
     }
 
-	exec(command, (error, stdout, stderr) => {
-		if (error) {
-			reject(error)
-		} else {
+    exec(command, (error, stdout, stderr) => {
+        if (error) {
+            reject(error)
+        } else {
             let networks = []
             let cellContent = []
             let lines = stdout.split("\n")
@@ -378,7 +378,7 @@ rpiWifi.scan = (networkInterface) => new Promise((resolve, reject) => {
             }).catch(() => {
                 resolve(networks)
             })
-		}
+        }
     })
 })
 
